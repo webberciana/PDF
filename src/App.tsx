@@ -74,7 +74,7 @@ function App() {
           <div className="flex justify-center items-center mb-4">
             <FileSignature className="h-8 sm:h-12 w-8 sm:w-12 text-blue-600 mr-2 sm:mr-3" />
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
-              Firma Digital
+              FirmaPDF
             </h1>
           </div>
           <p className="text-sm sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
