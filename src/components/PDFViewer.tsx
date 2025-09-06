@@ -193,14 +193,14 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file, onPageClick, signaturePosit
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
       {/* Controles */}
       <div className="bg-gray-50 p-3 border-b">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
           <div className="flex items-center space-x-2">
             <FileText className="h-5 w-5 text-blue-600" />
-            <span className="text-sm font-medium text-gray-700 truncate">
+            <span className="text-xs sm:text-sm font-medium text-gray-700 truncate">
               {file.name}
             </span>
           </div>
-          <div className="text-sm text-gray-600">
+          <div className="text-xs sm:text-sm text-gray-600 text-center sm:text-right">
             Página {currentPage} de {totalPages}
           </div>
         </div>
@@ -299,16 +299,6 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file, onPageClick, signaturePosit
                 </div>
               )}
             </div>
-          )}
-
-          {/* Fallback iframe si el canvas no funciona */}
-          {!canvasRef.current && pdfUrl && (
-            <iframe
-              src={pdfUrl}
-              className="w-full border-0 block mx-auto shadow-lg"
-              style={{ height: '600px', minHeight: '400px' }}
-              title="Vista previa del PDF"
-            />
           )}
         </div>
       </div>
