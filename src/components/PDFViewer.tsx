@@ -17,6 +17,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file, onPageClick, signaturePosit
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [hasInitialZoomTrick, setHasInitialZoomTrick] = useState(false);
 
   useEffect(() => {
     const loadPDF = async () => {
@@ -44,9 +45,14 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file, onPageClick, signaturePosit
           // Renderizar la primera página
           await renderPage(pdf, 1);
           
-          // Crear URL para fallback
-          const url = URL.createObjectURL(file);
-          setPdfUrl(url);
+          // Truco del zoom para evitar errores de visualización en móvil
+          if (!hasInitialZoomTrick) {
+            setZoom(0.9);
+            setTimeout(() => {
+              setZoom(1);
+              setHasInitialZoomTrick(true);
+            }, 100);
+          }
         } else {
           setError('Tipo de archivo no soportado para vista previa');
         }
@@ -54,9 +60,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file, onPageClick, signaturePosit
         console.error('Error loading PDF:', err);
         // Fallback a iframe si PDF.js falla
         if (file.type === 'application/pdf') {
-          const url = URL.createObjectURL(file);
-          setPdfUrl(url);
-          setTotalPages(1);
+          setError('Error al cargar el PDF. Por favor, intenta con otro archivo.');
         } else {
           setError('Error al cargar el documento');
         }
@@ -193,14 +197,14 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file, onPageClick, signaturePosit
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
       {/* Controles */}
       <div className="bg-gray-50 p-3 border-b">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+          <div className="flex items-center space-x-2 min-w-0">
             <FileText className="h-5 w-5 text-blue-600" />
             <span className="text-xs sm:text-sm font-medium text-gray-700 truncate">
               {file.name}
             </span>
           </div>
-          <div className="text-xs sm:text-sm text-gray-600 text-center sm:text-right">
+          <div className="text-xs sm:text-sm text-gray-600 flex-shrink-0">
             Página {currentPage} de {totalPages}
           </div>
         </div>
@@ -300,6 +304,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file, onPageClick, signaturePosit
               )}
             </div>
           )}
+
         </div>
       </div>
 
